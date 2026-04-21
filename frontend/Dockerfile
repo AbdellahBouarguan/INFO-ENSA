@@ -8,7 +8,7 @@ RUN npm install
 
 RUN npm run build -- --configuration production
 
-##
+
 FROM nginx:alpine
 
 RUN rm -rf /usr/share/nginx/html/* 
