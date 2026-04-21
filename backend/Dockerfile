@@ -1,22 +1,12 @@
-FROM node:20-alpine AS build
-
-WORKDIR /frontend
-
+FROM php:8.3-apache
+RUN docker-php-ext-install pdo pdo_pgsql
+RUN apt-get update && apt-get install -y zip unzip git
+WORKDIR /var/www/html 
+#apache expects it as the default
 COPY . .
-
-RUN npm install
-
-RUN npm run build -- --configuration production
-
-##
-FROM nginx:alpine
-
-RUN rm -rf /usr/share/nginx/html/* 
-
-WORKDIR /output
-
-COPY --from=build /frontend/dist/plateformeEtudiant /usr/share/nginx/html/
-
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
+#from composer in composer folder
+RUN chown -R www-data:www-data storage bootstrap/cache
+RUN a2enmod rewrite
 EXPOSE 80
-
-CMD ["nginx","-g","daemon off;"]
