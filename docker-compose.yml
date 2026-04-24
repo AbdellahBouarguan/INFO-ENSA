@@ -6,14 +6,16 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgres/data
     ports:
       - 5433:5432
   backend:
-    build: ./backend 
+    build: ./backend
     ports:
       - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
     depends_on:
       - db
     environment:
@@ -30,7 +32,6 @@ services:
       - backend
     volumes:
       - ./frontend/src:/usr/share/nginx/html
-
 
 volumes:
   pgdata:
