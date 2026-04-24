@@ -28,6 +28,8 @@ services:
       - "4200:80"
     depends_on:
       - backend
+    volumes:
+      - ./frontend/src:/usr/share/nginx/html
 
 
 volumes:
